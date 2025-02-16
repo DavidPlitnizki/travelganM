@@ -1,42 +1,45 @@
 import banners from "@/constants/banners";
+import { MOCK_LIST } from "@/constants/data";
 import icons from "@/constants/icons";
 import images from "@/constants/images";
 import { useEffect, useRef, useState } from "react";
-import { Text, View, Image, ImageSourcePropType } from "react-native";
+import { Text, View, Image, ImageSourcePropType, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type BannerType = {
-  [key: number]: ImageSourcePropType | undefined;
+type ItemProps = {
+  title: string;
+  description: string;
+  imgSrc: ImageSourcePropType | undefined;
 };
 
-const MapBanners: BannerType = {
-  1: banners.banner_1,
-  2: banners.banner_2,
-  3: banners.banner_3,
-};
+const Item = ({ title, description, imgSrc }: ItemProps) => (
+  <View className="flex w-full h-80 my-2 rounded-2xl p-4 bg-black-300/70">
+    <View className="h-56">
+      <Image
+        source={imgSrc}
+        className="size-full rounded-2xl border-2 border-white"
+      />
+      <View className="absolute right-2 top-2 flex flex-row justify-center items-center rounded-full px-1.5 py-0.5 bg-white">
+        <Text className="font-rubik-semibold text-base mr-1">4.4</Text>
+        <Image source={icons.star} className="size-6" />
+      </View>
+    </View>
+    <View className="flex flex-row mt-2 justify-between items-start">
+      <View className="flex flex-col">
+        <Text className="font-rubik-medium text-xl text-accent-100">
+          {title}
+        </Text>
+        <Text className="font-rubik-semibold text-md text-accent-100/70">
+          {title}
+        </Text>
+      </View>
+
+      <Image source={icons.heart} className="size-6 mt-1" />
+    </View>
+  </View>
+);
 
 export default function Index() {
-  const [banner, setBanner] = useState(1);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    const changeBanner = () => {
-      if (banner > 2) {
-        setBanner(1);
-      } else {
-        setBanner((prev) => (prev += 1));
-      }
-    };
-    intervalRef.current = setInterval(() => {
-      changeBanner();
-    }, 3000);
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [banner]);
   return (
     <SafeAreaView className="bg-white h-full">
       <View className="px-4">
@@ -60,9 +63,19 @@ export default function Index() {
           </View>
         </View>
 
-        <View className="flex mt-4">
-          <Image source={MapBanners[banner]} className="w-full" />
-        </View>
+        <FlatList
+          contentContainerClassName="pb-32"
+          bounces={false}
+          data={MOCK_LIST}
+          renderItem={({ item }) => (
+            <Item
+              title={item.title}
+              description={item.description}
+              imgSrc={item.src}
+            />
+          )}
+          keyExtractor={(item) => item.id}
+        />
       </View>
     </SafeAreaView>
   );
