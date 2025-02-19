@@ -1,10 +1,16 @@
-import banners from "@/constants/banners";
 import { MOCK_LIST } from "@/constants/data";
 import icons from "@/constants/icons";
 import images from "@/constants/images";
-import { useEffect, useRef, useState } from "react";
-import { Text, View, Image, ImageSourcePropType, FlatList } from "react-native";
+import {
+  Text,
+  View,
+  Image,
+  ImageSourcePropType,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Card, Text as Txt, Icon, MD2Colors } from "react-native-paper";
 
 type ItemProps = {
   title: string;
@@ -12,32 +18,31 @@ type ItemProps = {
   imgSrc: ImageSourcePropType | undefined;
 };
 
-const Item = ({ title, description, imgSrc }: ItemProps) => (
-  <View className="flex w-full h-80 my-2 rounded-2xl p-4 bg-black-300/70">
-    <View className="h-56">
-      <Image
-        source={imgSrc}
-        className="size-full rounded-2xl border-2 border-white"
-      />
-      <View className="absolute right-2 top-2 flex flex-row justify-center items-center rounded-full px-1.5 py-0.5 bg-white">
-        <Text className="font-rubik-semibold text-base mr-1">4.4</Text>
-        <Image source={icons.star} className="size-6" />
-      </View>
+const CardComponent = ({ title, description, imgSrc }: ItemProps) => {
+  return (
+    <View className="my-2">
+      <Card mode="elevated">
+        <Card.Title title={title} />
+        <View className="flex flex-row border rounded-2xl px-2 py-1 absolute right-4 top-4 items-center bg-slate-100">
+          <Text>4.5</Text>
+          <Icon source="star" color={MD2Colors.amber500} size={20} />
+        </View>
+        <Card.Content>
+          <Txt variant="bodyMedium">{description}</Txt>
+        </Card.Content>
+        <Card.Cover source={imgSrc} />
+        <Card.Actions>
+          <TouchableOpacity className="border rounded-full bg-slate-300 p-1">
+            <Icon source="heart" size={20} />
+          </TouchableOpacity>
+          <TouchableOpacity className="border rounded-full bg-slate-300 p-1">
+            <Icon source="share" size={20} />
+          </TouchableOpacity>
+        </Card.Actions>
+      </Card>
     </View>
-    <View className="flex flex-row mt-2 justify-between items-start">
-      <View className="flex flex-col">
-        <Text className="font-rubik-medium text-xl text-accent-100">
-          {title}
-        </Text>
-        <Text className="font-rubik-semibold text-md text-accent-100/70">
-          {title}
-        </Text>
-      </View>
-
-      <Image source={icons.heart} className="size-6 mt-1" />
-    </View>
-  </View>
-);
+  );
+};
 
 export default function Index() {
   return (
@@ -68,7 +73,7 @@ export default function Index() {
           bounces={false}
           data={MOCK_LIST}
           renderItem={({ item }) => (
-            <Item
+            <CardComponent
               title={item.title}
               description={item.description}
               imgSrc={item.src}
